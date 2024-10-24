@@ -1,6 +1,7 @@
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const authMiddleware = require('./middleware/authMiddleware');
+
 require('dotenv').config();
 
 const app = express();

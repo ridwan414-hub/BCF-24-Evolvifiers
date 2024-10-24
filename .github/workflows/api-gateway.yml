@@ -36,24 +36,26 @@ jobs:
       - name: Logout from Docker Hub
         run: docker logout
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.MASTER_IP }} >> ~/.ssh/known_hosts
       
       - name: Copy manifest files to Kubernetes master node
         run: |
-          scp -o StrictHostKeyChecking=no Manifests/configmaps.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
-          scp -o StrictHostKeyChecking=no Manifests/deployments.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
-          scp -o StrictHostKeyChecking=no Manifests/services.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no Manifests/configmaps.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no Manifests/deployments.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no Manifests/services.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
       
       - name: Deploy to Kubernetes
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "cd /home/ubuntu/Manifests && \
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "cd /home/ubuntu/Manifests && \
           kubectl apply -f configmaps.yaml && \
           kubectl apply -f deployments.yaml && \
           kubectl apply -f services.yaml"
       
       - name: Verify Deployment
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl get pods"
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "kubectl get pods"

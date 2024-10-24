@@ -11,8 +11,13 @@ const app = express();
 // Middleware
 app.use(express.json());
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).send('Auth Service is running');
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

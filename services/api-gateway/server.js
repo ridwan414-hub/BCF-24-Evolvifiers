@@ -33,7 +33,7 @@ app.use('/api/bookings', authMiddleware, bookingServiceProxy);
 app.use('/api/tickets', authMiddleware, ticketServiceProxy);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get('/health', (req, res) => {
     res.json({ message: "API Gateway is running!" });
 });
 

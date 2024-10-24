@@ -38,7 +38,6 @@ const getTrainById = async (req, res) => {
 const searchTrains = async (req, res) => {
     try {
         const { source, destination } = req.query;
-        console.log(source, destination);
         const trains = await trainService.searchTrains(source, destination);
         res.status(200).json(trains);
     } catch (error) {

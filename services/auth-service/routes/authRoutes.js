@@ -25,6 +25,8 @@ router.post(
     authController.login
 );
 
+router.get('/users',)
+
 
 
 module.exports = router;

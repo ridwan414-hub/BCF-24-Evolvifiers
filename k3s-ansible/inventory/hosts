@@ -1,0 +1,10 @@
+[master]
+master-node ansible_host=<MASTER_EC2_PUBLIC_IP>
+
+[worker]
+worker-node-1 ansible_host=<WORKER_1_EC2_PUBLIC_IP>
+worker-node-2 ansible_host=<WORKER_2_EC2_PUBLIC_IP>
+
+[k3s_cluster:children]
+master
+worker

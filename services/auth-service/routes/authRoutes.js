@@ -25,7 +25,6 @@ router.post(
     authController.login
 );
 
-router.get('/users',)
 
 
 

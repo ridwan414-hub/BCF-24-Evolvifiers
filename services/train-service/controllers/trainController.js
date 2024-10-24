@@ -45,9 +45,20 @@ const searchTrains = async (req, res) => {
     }
 };
 
+const getSeatStatus = async (req, res) => {
+    try {
+        const { trainId, seatNumber } = req.params;
+        const status = await trainService.getSeatStatus(trainId, parseInt(seatNumber));
+        res.status(200).json({ status });
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 module.exports = {
     addTrain,
     getAllTrains,
     getTrainById,
-    searchTrains
+    searchTrains,
+    getSeatStatus
 };

@@ -17,7 +17,6 @@ app.get('/health', (req, res) => {
     res.status(200).send('Train Service is running');
 });
 
-// Routes
 app.use('/api/trains', trainRoutes);
 
 // Start server

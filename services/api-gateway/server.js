@@ -35,7 +35,7 @@ app.use('/api/tickets', authMiddleware, ticketServiceProxy);
 app.get('/health', (req, res) => {
     res.json({ message: "API Gateway is running fine !  ! !" });
 });
-
+// Start the server
 app.listen(PORT, () => {
     console.log(`API Gateway running on port ${PORT}`);
 });

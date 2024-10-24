@@ -10,6 +10,7 @@ on:
       - main
     paths:
       - services/api-gateway/**
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -42,6 +43,10 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.MASTER_IP }} >> ~/.ssh/known_hosts
+      
+      - name: Update Kubernetes deployment image
+        run: |
+          sed -i "s|image: fazlulkarim105925/api-gateway:.*|image: fazlulkarim105925/api-gateway:${{ github.run_number }}|" Manifests/deployments.yaml
       
       - name: Copy manifest files to Kubernetes master node
         run: |

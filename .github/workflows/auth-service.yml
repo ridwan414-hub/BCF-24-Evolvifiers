@@ -43,6 +43,10 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.MASTER_IP }} >> ~/.ssh/known_hosts
       
+      - name: Update Kubernetes deployment image
+        run: |
+          sed -i "s|image: fazlulkarim105925/auth-service:.*|image: fazlulkarim105925/auth-service:${{ github.run_number }}|" Manifests/deployments.yaml
+      
       - name: Copy manifest files to Kubernetes master node
         run: |
           scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no Manifests/configmaps.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/

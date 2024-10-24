@@ -22,10 +22,10 @@ const ticketServiceProxy = createProxyMiddleware({
     target: process.env.TICKET_SERVICE_URL,
     changeOrigin: true
 });
-
+// Routes
 app.use('/api/auth', authServiceProxy);
 
-
+// Protected Routes
 app.use('/api/trains', authMiddleware, trainServiceProxy);
 app.use('/api/bookings', authMiddleware, bookingServiceProxy);
 app.use('/api/tickets', authMiddleware, ticketServiceProxy);

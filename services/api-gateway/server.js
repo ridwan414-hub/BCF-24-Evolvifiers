@@ -30,7 +30,7 @@ app.use('/api/trains', authMiddleware, trainServiceProxy);
 app.use('/api/bookings', authMiddleware, bookingServiceProxy);
 app.use('/api/tickets', authMiddleware, ticketServiceProxy);
 
-// Health check
+
 app.get('/health', (req, res) => {
     res.json({ message: "API Gateway is running fine !!" });
 });

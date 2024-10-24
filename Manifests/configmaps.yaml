@@ -5,8 +5,8 @@ metadata:
   name: auth-service-config
 data:
   PORT: "5001"
-  MONGO_URI: "mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/ticket_booking_service?retryWrites=true&w=majority&appName=Cluster0"
-  JWT_SECRET: "your_jwt_secret"
+  MONGO_URI: "mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/users?retryWrites=true&w=majority&appName=Cluster0"
+  JWT_SECRET: "evolvifiers"
   JWT_EXPIRES_IN: "3600"
 ---
 # ConfigMap for train-service
@@ -16,7 +16,7 @@ metadata:
   name: train-service-config
 data:
   PORT: "5002"
-  MONGO_URI: "mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/ticket_booking_service?retryWrites=true&w=majority&appName=Cluster0"
+  MONGO_URI: "mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/trains?retryWrites=true&w=majority&appName=Cluster0"
 ---
 # ConfigMap for api-gateway
 apiVersion: v1

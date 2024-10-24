@@ -1,3 +1,4 @@
+---
 # ConfigMap for auth-service
 apiVersion: v1
 kind: ConfigMap
@@ -7,7 +8,7 @@ data:
   PORT: "5001"
   MONGO_URI: "mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/users?retryWrites=true&w=majority&appName=Cluster0"
   JWT_SECRET: "evolvifiers"
-  JWT_EXPIRES_IN: "3600"
+  JWT_EXPIRES_IN: "360000"
 ---
 # ConfigMap for train-service
 apiVersion: v1
@@ -17,6 +18,10 @@ metadata:
 data:
   PORT: "5002"
   MONGO_URI: "mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/trains?retryWrites=true&w=majority&appName=Cluster0"
+  JWT_SECRET: "evolvifiers"
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  RABBITMQ_URL: "amqp://rabbitmq"
 ---
 # ConfigMap for api-gateway
 apiVersion: v1

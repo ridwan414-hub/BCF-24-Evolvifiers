@@ -1,0 +1,75 @@
+name: Train Service CI/CD
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - services/train-service/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - services/train-service/**
+jobs:
+  test:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        working-directory: ./services/train-service
+        run: npm install
+      - name: Run unit tests
+        working-directory: ./services/train-service
+        run: npm test
+  
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./services/train-service
+          push: true
+          tags: fazlulkarim105925/train-service:latest
+      - name: Logout from Docker Hub
+        run: docker logout
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      
+      - name: Copy manifest files to Kubernetes master node
+        run: |
+          scp -o StrictHostKeyChecking=no Manifests/configmaps.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+          scp -o StrictHostKeyChecking=no Manifests/deployments.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+          scp -o StrictHostKeyChecking=no Manifests/services.yaml ubuntu@${{ secrets.MASTER_IP }}:/home/ubuntu/Manifests/
+      
+      - name: Deploy to Kubernetes
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.MASTER_IP }} "cd /home/ubuntu/Manifests && \
+          kubectl apply -f configmaps.yaml && \
+          kubectl apply -f deployments.yaml && \
+          kubectl apply -f services.yaml"

@@ -1,0 +1,71 @@
+# Deployment for auth-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+      - name: auth-service
+        image: fazlulkarim105925/auth-service:latest
+        envFrom:
+        - configMapRef:
+            name: auth-service-config
+        ports:
+        - containerPort: 5001
+---
+# Deployment for train-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: train-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: train-service
+  template:
+    metadata:
+      labels:
+        app: train-service
+    spec:
+      containers:
+      - name: train-service
+        image: fazlulkarim105925/train-service:latest
+        envFrom:
+        - configMapRef:
+            name: train-service-config
+        ports:
+        - containerPort: 5002
+---
+# Deployment for api-gateway
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+      - name: api-gateway
+        image: fazlulkarim105925/api-gateway:latest
+        envFrom:
+        - configMapRef:
+            name: api-gateway-config
+        ports:
+        - containerPort: 5000

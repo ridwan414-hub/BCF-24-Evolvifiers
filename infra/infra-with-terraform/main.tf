@@ -83,9 +83,9 @@ resource "aws_security_group" "instance_sg" {
 # Create Nginx Proxy Instance (t3.small)
 resource "aws_instance" "nginx_proxy" {
   ami                    = "ami-0ea3c35c5c3284d82"
-  instance_type          = "t3.small"
+  instance_type          = "t2.micro"
   subnet_id              = aws_subnet.public_subnet.id
-  key_name              = "Key_bcf24"
+  key_name              = "bcf24"
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
 
   tags = {
@@ -98,24 +98,13 @@ resource "aws_instance" "k8s_instances" {
   count = 3
 
   ami                    = "ami-0ea3c35c5c3284d82"
-  instance_type          = "t3.medium"
+  instance_type          = "t3.small"
   subnet_id              = aws_subnet.public_subnet.id
-  key_name              = "Key_bcf24"
+  key_name              = "bcf24"
   vpc_security_group_ids = [aws_security_group.instance_sg.id]
 
   tags = {
     Name = element(["master", "worker-1", "worker-2"], count.index)
   }
 }
-output "nginx_proxy_public_ip" {
-  value = aws_instance.nginx_proxy.public_ip
-} 
-output "k8s_instances_public_ips" {
-  value = aws_instance.k8s_instances[*].public_ip
-}
-output "k8s_instances_private_ips" {
-  value = aws_instance.k8s_instances[*].private_ip
-}
-output "k8s_instances_private_dns" {
-  value = aws_instance.k8s_instances[*].private_dns
-}
+

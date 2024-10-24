@@ -19,7 +19,6 @@ app.get('/health', (req, res) => {
 
 app.use('/api/trains', trainRoutes);
 
-// Start server
 app.listen(PORT, () => {
     console.log(`Train Service running on port ${PORT}`);
 });

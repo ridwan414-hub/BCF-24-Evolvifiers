@@ -23,7 +23,6 @@ const ticketServiceProxy = createProxyMiddleware({
     changeOrigin: true
 });
 
-// Routes configuration
 app.use('/api/auth', authServiceProxy);
 
 

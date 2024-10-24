@@ -6,7 +6,6 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Proxy configuration
 const authServiceProxy = createProxyMiddleware({
     target: process.env.AUTH_SERVICE_URL,
     changeOrigin: true

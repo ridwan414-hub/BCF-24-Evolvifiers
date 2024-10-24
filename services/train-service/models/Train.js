@@ -5,9 +5,10 @@ const trainSchema = new mongoose.Schema({
     name: { type: String, required: true },
     source: { type: String, required: true },
     destination: { type: String, required: true },
-    departureTime: { type: Date, required: true },
-    arrivalTime: { type: Date, required: true },
-    availableSeats: { type: Number, required: true },
+    seats: [{
+        seatNumber: { type: Number, required: true },
+        status: { type: String, enum: ['available', 'booked', 'reserved'], default: 'available' }
+    }],
     price: { type: Number, required: true },
 });
 

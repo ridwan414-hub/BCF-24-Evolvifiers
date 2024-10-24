@@ -14,10 +14,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    bookedSeats: {
-        ref: 'Seat',
-        type: mongoose.Schema.Types.ObjectId
-    },
+    tickets: [
+        {
+            train_id: { ref: 'Train', type: mongoose.Schema.Types.ObjectId },
+            seat_id: { ref: 'Seat', type: mongoose.Schema.Types.ObjectId }
+        }
+    ],
     contactNumber: {
         type: String
     }

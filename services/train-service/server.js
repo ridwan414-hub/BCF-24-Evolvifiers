@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const trainRoutes = require('./routes/trainRoutes');
 const connectDB = require('./config/db');
 require('dotenv').config();
@@ -11,6 +12,7 @@ connectDB();
 
 // Middleware
 app.use(express.json());
+app.use(morgan('tiny'));
 
 
 app.get('/health', (req, res) => {

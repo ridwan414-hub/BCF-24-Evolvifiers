@@ -14,6 +14,10 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    bookedSeats: {
+        ref: 'Seat',
+        type: mongoose.Schema.Types.ObjectId
+    },
     contactNumber: {
         type: String
     }

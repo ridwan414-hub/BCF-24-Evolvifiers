@@ -2,12 +2,12 @@ const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const authMiddleware = require('./middleware/authMiddleware');
 const promClient = require('prom-client');  // Add this line
-
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+app.use(cors());
 // Initialize Prometheus metrics
 const collectDefaultMetrics = promClient.collectDefaultMetrics;
 collectDefaultMetrics({ prefix: 'apigateway_' });

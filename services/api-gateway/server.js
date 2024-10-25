@@ -37,7 +37,7 @@ app.use((req, res, next) => {
     if (path.includes('/api/auth')) service = 'auth';
     if (path.includes('/api/trains')) service = 'train';
     if (path.includes('/api/bookings')) service = 'booking';
-    if (path.includes('/api/tickets')) service = 'ticket';
+    if (path.includes('/api/payments')) service = 'payment';
 
     // Record response metrics after the request is complete
     res.on('finish', () => {
@@ -69,18 +69,18 @@ const bookingServiceProxy = createProxyMiddleware({
     target: process.env.BOOKING_SERVICE_URL,
     changeOrigin: true
 });
-const ticketServiceProxy = createProxyMiddleware({
-    target: process.env.TICKET_SERVICE_URL,
+const paymentServiceProxy = createProxyMiddleware({
+    target: process.env.PAYMENT_SERVICE_URL,
     changeOrigin: true
 });
 
 // Routes
-app.use('/api/auth', authServiceProxy);
+app.use('/auth', authServiceProxy);
 
 // Protected Routes
-app.use('/api/trains', authMiddleware, trainServiceProxy);
-app.use('/api/bookings', authMiddleware, bookingServiceProxy);
-app.use('/api/tickets', authMiddleware, ticketServiceProxy);
+app.use('/trains', authMiddleware, trainServiceProxy);
+app.use('/bookings', authMiddleware, bookingServiceProxy);
+app.use('/payments', authMiddleware, paymentServiceProxy);
 
 app.get('/health', (req, res) => {
     res.json({ message: "API Gateway is Perfectly Running !!!!!" });

@@ -47,6 +47,54 @@ spec:
         ports:
         - containerPort: 5002
 ---
+# Deployment for booking-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booking-service
+  template:
+    metadata:
+      labels:
+        app: booking-service
+    spec:
+      containers:
+      - name: booking-service
+        image: fazlulkarim105925/booking-service:latest
+        envFrom:
+        - configMapRef:
+            name: booking-service-config
+        ports:
+        - containerPort: 5003
+---
+# Deployment for payment-service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+      - name: payment-service
+        image: fazlulkarim105925/payment-service:latest
+        envFrom:
+        - configMapRef:
+            name: payment-service-config
+        ports:
+        - containerPort: 5004
+---
 # Deployment for api-gateway
 apiVersion: apps/v1
 kind: Deployment

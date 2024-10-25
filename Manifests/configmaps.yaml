@@ -23,6 +23,34 @@ data:
   REDIS_PORT: "6379"
   RABBITMQ_URL: "amqp://rabbitmq"
 ---
+# ConfigMap for booking-service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: booking-service-config
+data:
+  PORT: "5003"
+  MONGO_URI: "mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/booking?retryWrites=true&w=majority&appName=Cluster0"
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  RABBITMQ_URL: "amqp://rabbitmq"
+  JWT_SECRET: "evolvifiers"
+---
+# ConfigMap for payment-service
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: payment-service-config
+data:
+  PORT: "5004"
+  MONGO_URI: "mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/payments?retryWrites=true&w=majority&appName=Cluster0"
+  RABBITMQ_URL: "amqp://rabbitmq"
+  SMTP_HOST: "smtp.gmail.com"
+  SMTP_PORT: "587"
+  SMTP_USER: "asifmahmoud414@gmail.com"
+  SMTP_PASS: "fqqf vqsn bwrg hcak"
+  OTP_SECRET: "evolvifiers"
+---
 # ConfigMap for api-gateway
 apiVersion: v1
 kind: ConfigMap

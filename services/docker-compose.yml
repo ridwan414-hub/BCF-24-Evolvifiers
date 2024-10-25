@@ -37,6 +37,49 @@ services:
       - redis
       - rabbitmq
 
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: booking-service
+    environment:
+      - PORT=5003
+      - MONGO_URI=mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/booking?retryWrites=true&w=majority&appName=Cluster0
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - RABBITMQ_URL=amqp://rabbitmq
+      - JWT_SECRET=evolvifiers
+    ports:
+      - "5003:5003"
+    volumes:
+      - ./booking-service:/app
+    depends_on:
+      - auth-service
+      - train-service
+      - redis
+      - rabbitmq
+
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    environment:
+      - PORT=5004
+      - MONGO_URI=mongodb+srv://evolvifiers:password_123@cluster0.r7dfn.mongodb.net/payments?retryWrites=true&w=majority&appName=Cluster0
+      - RABBITMQ_URL=amqp://rabbitmq
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      - SMTP_USER=asifmahmoud414@gmail.com
+      - SMTP_PASS=fqqf vqsn bwrg hcak
+      - OTP_SECRET=evolvifiers
+    ports:
+      - "5004:5004"
+    volumes:
+      - ./payment-service:/app
+    depends_on:
+      - rabbitmq
+
   redis:
     image: "redis:latest"
     container_name: redis
@@ -71,6 +114,8 @@ services:
     depends_on:
       - auth-service
       - train-service
+      - booking-service
+      - payment-service
     ports:
       - "5000:5000"
     volumes:

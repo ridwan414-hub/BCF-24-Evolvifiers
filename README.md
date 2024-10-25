@@ -1,6 +1,4 @@
-# Train Booking System - Frontend Implementation Guide
 
-<<<<<<< HEAD
 # Evolvifiers Train Booking System
 
 ## Overview

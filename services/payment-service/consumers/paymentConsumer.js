@@ -4,7 +4,7 @@ const PaymentService = require('../services/paymentService');
 class PaymentConsumer {
     async start() {
         try {
-            const connection = await amqp.connect('amqp://localhost');
+            const connection = await amqp.connect(process.env.RABBITMQ_URL);
             const channel = await connection.createChannel();
             const queue = 'payment_queue';
 

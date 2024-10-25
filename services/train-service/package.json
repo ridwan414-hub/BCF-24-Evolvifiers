@@ -20,5 +20,6 @@
     "morgan": "^1.10.0"
   },
   "keywords": [],
+  "devDependencies": {},
   "description": ""
 }

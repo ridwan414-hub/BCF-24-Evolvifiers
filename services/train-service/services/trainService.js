@@ -2,6 +2,7 @@ const Train = require('../models/Train');
 const amqp = require('amqplib');
 const Redis = require('ioredis');
 
+
 const host = process.env.REDIS_HOST || 'localhost';
 const port = process.env.REDIS_PORT || 6379;
 
@@ -34,6 +35,8 @@ async function connectQueue() {
                 // Create an instance of TrainService
                 const trainService = new TrainService();
                 await trainService.updateSeatStatus(trainId, seatNumber, status);
+
+                console.log(`Updating seat status for trainId: ${trainId}, seatNumber: ${seatNumber}, status: ${status}`);
 
                 channel.ack(data);
             } catch (error) {

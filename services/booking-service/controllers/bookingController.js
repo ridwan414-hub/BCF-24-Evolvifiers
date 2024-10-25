@@ -2,14 +2,15 @@ const BookingService = require('../services/bookingService');
 
 const createBooking = async (req, res) => {
     try {
-        const { trainId, seatNumber, price } = req.body;
+        const { trainId, seatNumber, price, userEmail } = req.body;
         const userId = req.user.id; // Assuming auth middleware
 
         const booking = await BookingService.createBooking(
             trainId,
             userId,
             seatNumber,
-            price
+            price,
+            userEmail
         );
         res.status(201).json(booking);
     } catch (error) {

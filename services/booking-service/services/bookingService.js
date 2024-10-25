@@ -1,6 +1,7 @@
 const Redis = require('ioredis');
 const amqp = require('amqplib');
 const Booking = require('../models/Booking');
+const OTPService = require('../../payment-service/services/otpService');
 
 
 const host = process.env.REDIS_HOST || 'localhost';
@@ -32,7 +33,7 @@ async function connectQueue() {
 connectQueue();
 
 class BookingService {
-    async createBooking(trainId, userId, seatNumber, price) {
+    async createBooking(trainId, userId, seatNumber, price, userEmail) {
         // Check seat availability in Redis
         const seatKey = `train:${trainId}:seat:${seatNumber}`;
         const seatStatus = await redis.get(seatKey);
@@ -51,15 +52,36 @@ class BookingService {
         await booking.save();
 
         // Reserve seat in Redis
-        await redis.set(seatKey, 'booked', 'EX', 300); // 5 minutes expiry
+        await redis.set(seatKey, 'pending', 'EX', 300); // 5 minutes expiry
 
         // Send to payment queue
         await channel.sendToQueue(
             'payment_queue',
             Buffer.from(JSON.stringify({
+                trainId,
+                seatNumber,
+                status: 'pending',
                 bookingId: booking._id,
                 amount: price,
                 userId
+            }))
+        );
+
+        // Send to notification queue for booking confirmation
+        await channel.sendToQueue(
+            'notification_queue',
+            Buffer.from(JSON.stringify({
+                type: 'email',
+                userEmail: userEmail,
+                details: {
+                    _id: booking._id,
+                    ticket: {
+                        train_id: trainId,
+                        seat_id: seatNumber
+                    },
+                    price,
+                    bookingDate: new Date()
+                }
             }))
         );
 
@@ -112,6 +134,48 @@ class BookingService {
 
     async getBooking(bookingId) {
         return await Booking.findById(bookingId);
+    }
+
+    async generateAndSendOTP(userId, email) {
+        const otp = await OTPService.generateOTP(userId);
+
+        // Send OTP to notification queue
+        await channel.sendToQueue(
+            'notification_queue',
+            Buffer.from(JSON.stringify({
+                type: 'otp',
+                email,
+                otp
+            }))
+        );
+
+        return otp;
+    }
+
+    async updateBookingStatusFromQueue() {
+        try {
+            const connection = await amqp.connect(process.env.RABBITMQ_URL);
+            const channel = await connection.createChannel();
+            const queue = 'booking_status_updates';
+
+            await channel.assertQueue(queue, { durable: true });
+            console.log('Booking status consumer waiting for messages...');
+
+            channel.consume(queue, async (msg) => {
+                if (msg !== null) {
+                    const { bookingId, status } = JSON.parse(msg.content.toString());
+                    try {
+                        await this.updateBookingStatus(bookingId, status);
+                        channel.ack(msg);
+                    } catch (error) {
+                        console.error('Error updating booking status:', error);
+                        channel.nack(msg);
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Booking status consumer error:', error);
+        }
     }
 }
 

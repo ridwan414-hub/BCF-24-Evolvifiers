@@ -16,8 +16,8 @@ const UserSchema = new mongoose.Schema({
     },
     tickets: [
         {
-            train_id: { ref: 'Train', type: mongoose.Schema.Types.ObjectId },
-            seat_id: { ref: 'Seat', type: mongoose.Schema.Types.ObjectId }
+            train_id: { type: String },
+            seat_id: { type: String }
         }
     ],
     contactNumber: {

@@ -8,10 +8,7 @@ module.exports = (req, res, next) => {
     }
 
     try {
-        console.log('sbvv')
-        console.log(process.env.JWT_SECRET)
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log(decoded)
         req.user = decoded.user;
         next();
     } catch (err) {
